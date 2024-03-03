@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Price Comparison</title>
+    
+</head>
+<body>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+#product-form {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.product {
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.product img {
+    max-width: 100%;
+    height: auto;
+}
+
+    </style>
+    
+    <h1>Product Price Comparison</h1>
+    <form id="product-form">
+        <label for="product">Enter Product Name:</label>
+        <input type="text" id="product" name="product">
+        <button type="submit">Search</button>
+    </form>
+
+    <div id="results">
+        <!-- Results will be displayed here -->
+    </div>
+
+    <script>
+        document.getElementById('product-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const product = document.getElementById('product').value;
+
+            fetch(`/api/search?product=${product}`)
+                .then(response => response.json())
+                .then(data => {
+                    const resultsDiv = document.getElementById('results');
+                    if (data.error) {
+                        resultsDiv.innerHTML = `<p>${data.error}</p>`;
+                    } else {
+                        resultsDiv.innerHTML = `
+                            <div class="product">
+                                <p>Product Name: ${data.name}</p>
+                                <p>Retailer: ${data.retailer}</p>
+                                <p>Price: ₹${data.price}</p>
+                                <img src="${data.image}" alt="Product Image">
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
